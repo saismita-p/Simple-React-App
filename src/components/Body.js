@@ -2,21 +2,16 @@ import { useEffect, useState } from "react";
 import { resList } from "../utils/mockData";
 import RestaurantCard from "./RestaurantCard";
 import Shimmer from "./Shimmer";
+import { Link } from "react-router-dom";
 
 const Body = () => {
+  const [listOfRestaurants, setListOfRestaurants] = useState([]); // a local state variable as its declared inside a component
+  const [filteredRestaurants, setFilteredRestaurants] = useState([]);
+  const [searchText, setSearchText] = useState("");
+
   useEffect(() => {
     fetchData();
   }, []);
-
-  // Normal JS Variables can be declared and assigned values like this, but ...
-
-  // let listOfRestaurants;
-  // listOfRestaurants = [];
-
-  // React variables that reflect data change on UI
-  // [] argument assigns empty array to listOfRestaurants
-  // using setListOfRestaurants method, we assign or update the value of listOfRestaurants, we can not assign values to listOfRestaurants directly
-  const [listOfRestaurants, setListOfRestaurants] = useState([]); // a local state variable as its declared inside a component
   const fetchData = async () => {
     const data = await fetch(
       "https://www.swiggy.com/dapi/restaurants/list/v5?lat=12.96340&lng=77.58550&is-seo-homepage-enabled=true&page_type=DESKTOP_WEB_LISTING"
@@ -33,6 +28,10 @@ const Body = () => {
       json?.data?.cards?.[4]?.card?.card?.gridElements?.infoWithStyle
         ?.restaurants
     );
+    setFilteredRestaurants(
+      json?.data?.cards?.[4]?.card?.card?.gridElements?.infoWithStyle
+        ?.restaurants
+    );
   };
 
   return listOfRestaurants.length === 0 ? (
@@ -40,13 +39,34 @@ const Body = () => {
   ) : (
     <div className="body">
       <div className="filter">
+        <div className="search">
+          <input
+            type="search"
+            className="search-box"
+            value={searchText}
+            onChange={(e) => {
+              setSearchText(e.target.value);
+            }}
+          ></input>
+          <button
+            onClick={() => {
+              const filteredRestaurants = listOfRestaurants.filter((res) =>
+                res.info.name.toUpperCase().includes(searchText.toUpperCase())
+              );
+              setFilteredRestaurants(filteredRestaurants);
+            }}
+          >
+            Search
+          </button>
+        </div>
+
         <button
           className="filter-btn"
           onClick={() => {
             const filteredList = listOfRestaurants.filter(
               (res) => res?.info.avgRating > 4.4
             );
-            setListOfRestaurants(filteredList);
+            setFilteredRestaurants(filteredList);
           }}
         >
           Top Rated Restaurants
@@ -54,8 +74,13 @@ const Body = () => {
       </div>
       <div className="res-container">
         {/* RestaurantCard */}
-        {listOfRestaurants.map((restaurant) => (
-          <RestaurantCard key={restaurant.info.id} resData={restaurant} />
+        {filteredRestaurants.map((restaurant) => (
+          <Link
+            key={restaurant.info.id}
+            to={"/restaurants/" + restaurant.info.id}
+          >
+            <RestaurantCard resData={restaurant} />
+          </Link>
         ))}
       </div>
     </div>
