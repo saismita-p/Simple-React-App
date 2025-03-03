@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import Shimmer from "./Shimmer";
 import { useParams } from "react-router-dom";
-import { MENU_URL } from "../utils/constants";
+
 import Error from "./Error";
 import Contact from "./Contact";
 
@@ -18,11 +18,11 @@ const RestaurantMenu = () => {
   const fetchResData = async () => {
     const data = await fetch(MENU_URL + resId);
 
-    if (!data.cards) {
-      return <Contact />;
-    }
     console.log(data);
     const json = await data.json();
+    if (!json?.data?.cards) {
+      return <Contact />;
+    }
     console.log(json.data);
     setResInfo(json.data);
     setItemAllCards(

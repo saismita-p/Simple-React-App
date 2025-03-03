@@ -63,4 +63,4 @@ VS code rafce creates components automatically based on file name
 - Server Side Routing - when we make a network call and fetches the html from server
 - Client Side Routing - It just loads the component and there is no network call to server
 
-# problem lies in the fact that you are calling your state setter immediately inside the function component body, which forces React to re-invoke your function again, with the same props, which ends up calling the state setter again, which triggers React to call your function again.... and so on.
+# problem occurs calling state setter immediately inside the function component body, which forces React to re-invoke the function again, with the same props, which ends up calling the state setter again, which triggers React to call the function again.... and so on.
