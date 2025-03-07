@@ -1,4 +1,5 @@
-.header {
+@import "tailwindcss";
+/* .header {
   display: flex;
   justify-content: space-between;
   border: 2px solid black;
@@ -115,4 +116,4 @@ input[type="checkbox"] {
 .user-card {
   padding: 20px;
   border: 1px solid black;
-}
+} */
